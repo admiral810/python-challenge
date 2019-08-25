@@ -1,7 +1,7 @@
 import os
 import csv
 
-# track number of months
+# track number of months and
 
 months_count = []
 profit_total = []
@@ -56,10 +56,10 @@ print("----------------------------")
 print("Financial Analysis")
 print("----------------------------")
 print(f"Total Months: {len(months_count)}")
-print(f"Total: ${sum(profit_total)}")
-print(f"Average Change: $ {average_change}")
-print(f"Greatest Increase in Profits: {max_month_name} (${max_change})")
-print(f"Greatest Decrease in Profits: {min_month_name} (${min_change})")
+print(f"Total: ${sum(profit_total) : ,}")
+print(f"Average Change: $ {average_change : ,}")
+print(f"Greatest Increase in Profits: {max_month_name} (${max_change : ,})")
+print(f"Greatest Decrease in Profits: {min_month_name} (${min_change : ,})")
 
 # Set variable for output file
 output_file = os.path.join("budget_summary.csv")
