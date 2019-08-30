@@ -1,24 +1,9 @@
 import os
 import csv
+import statistics 
 
-# track number of votes
-
-vote_count = []
-
-
-# Define the function for count of votes, one sole parameter
-def election(election_data):
-
-# Find the number of total voles
-    vote = str(election_data[0])
-    candidate = str(election_data[2])
-
-# Append vote count list
-    vote_count.append(vote)
-
-
-
-
+# Create lists to store each candidate occurance in dataset
+candidate_with_dupes = []
 
 # path to collect the CSV file
 poll_csv = os.path.join("election_data.csv")
@@ -30,22 +15,58 @@ with open(poll_csv, 'r') as poll_csv_file:  #'r' read the CSV
     csv_reader = csv.reader(poll_csv_file, delimiter=',')
     header = next(poll_csv_file)
 
-    ##print(f"CSV Header: {header}") - initial test to make sure file is pulling in##
-
-    candidate_of_interest = "Kahn"
-
-    # Loop through the data
+    # Loop through the data to create a list of all candidates - note it has duplicate values
     for row in csv_reader:
 
-        # run the budget function
-        if candidate_of_interest == row[2]:
-            election(row)
+        candidate_with_dupes.append(row[2])
+        total_votes = len(candidate_with_dupes)
 
-# calculate the total votes
-print(f"total votes are:  {len(vote_count)}")
+    # De-dupe the candidate list
+    candidate_list = list(set(candidate_with_dupes))
 
 
-#!!!figure out how to dedupe candidates!!!  candidate_list_dupes = []  #contains duplicate candidates
-#!!!figure out how to dedupe candidates!!!  candidate_list = list(set(candidate_list_dupes))  #removed duplicate candidates
-#!!!figure out how to dedupe candidates!!! print(f"candidates are:  {candidate_list}")
-#!!!figure out how to dedupe candidates!!!      candidate_list_dupes.append(candidate)
+    # Length of candidates to calculate the total number of candidates for ranges
+    cand_one_votes = candidate_with_dupes.count (candidate_list[0])
+    cand_one_percent = round(cand_one_votes / total_votes * 100 , 2)
+    
+    cand_two_votes = candidate_with_dupes.count (candidate_list[1])
+    cand_two_percent = round(cand_two_votes / total_votes * 100 , 2)
+    
+    cand_three_votes = candidate_with_dupes.count (candidate_list[2])
+    cand_three_percent = round(cand_three_votes / total_votes * 100 , 2)
+    
+    cand_four_votes = candidate_with_dupes.count (candidate_list[3])
+    cand_four_percent = round(cand_four_votes / total_votes * 100 , 2)
+
+    # Determine winner by finding the mode of the candidate list
+    winner = statistics.mode(candidate_with_dupes)
+
+
+# print statements of results
+
+print(f"-----------------------")
+print(f"Total Votes: {total_votes : ,}")
+print(f"-----------------------")
+print(f" {candidate_list[0]}: {cand_one_percent}% ({cand_one_votes : ,} )")
+print(f" {candidate_list[1]}: {cand_two_percent}% ({cand_two_votes : ,} )")
+print(f" {candidate_list[2]}: {cand_three_percent}% ({cand_three_votes : ,} )")
+print(f" {candidate_list[3]}: {cand_four_percent}% ({cand_four_votes : ,} )")
+print(f"-----------------------")
+print(f"Winner:  {winner}")
+
+# Set variable for output file
+output_file = os.path.join("poll_summary.csv")
+
+#  Open the output file 
+with open(output_file, "w", newline="") as new_csv:
+    writer = csv.writer(new_csv)
+
+#  Write to output file
+    writer.writerow(['Candidate', 'Vote Count', 'Percent'])
+    writer.writerow(['Total Votes', total_votes, '100'])
+    writer.writerow([candidate_list[0], cand_one_votes, cand_one_percent])
+    writer.writerow([candidate_list[1], cand_two_votes, cand_two_percent])
+    writer.writerow([candidate_list[2], cand_three_votes, cand_three_percent])
+    writer.writerow([candidate_list[3], cand_four_votes, cand_four_percent])
+    writer.writerow(['--', '--', '--'])
+    writer.writerow(['Overall winner: ', winner])
